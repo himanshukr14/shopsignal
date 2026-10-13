@@ -1,16 +1,19 @@
-.PHONY: install test lint format check
+
+.PHONY: setup install test lint format check
+
+setup: install
 
 install:
-	python -m pip install -e ".[dev]"
+	uv sync --extra dev
 
 test:
-	python -m pytest
+	uv run pytest -q
 
 lint:
-	python -m ruff check .
+	uv run ruff check .
 
 format:
-	python -m ruff check --fix .
-	python -m ruff format .
+	uv run ruff check --fix .
+	uv run ruff format .
 
 check: lint test
