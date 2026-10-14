@@ -17,3 +17,6 @@ format:
 	uv run ruff format .
 
 check: lint test
+
+ingest:
+	uv run python -m shopsignal.ingestion
