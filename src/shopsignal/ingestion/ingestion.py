@@ -17,12 +17,14 @@ def ingest_table(
     config: Settings = settings,
     ingest_date: date | None = None,
     batch_id: str | None = None,
+    source_dir: Path | None = None,
 ) -> Path:
     """Ingest one CSV table into a date-partitioned Bronze Parquet directory."""
     if table not in config.source_tables:
         raise ValueError(f"Unsupported source table: {table}")
 
-    source_file = config.raw_data_dir / f"{table}.csv"
+    input_dir = source_dir if source_dir is not None else config.raw_data_dir
+    source_file = input_dir / f"{table}.csv"
     if not source_file.is_file():
         raise FileNotFoundError(f"Required source file not found: {source_file}")
 
@@ -81,12 +83,25 @@ def ingest_table(
     return output_file
 
 
+
 def ingest_all(
     config: Settings = settings,
     ingest_date: date | None = None,
+    source_dir: Path | None = None,
+    tables: list[str] | None = None,
 ) -> list[Path]:
-    """Ingest all configured source tables."""
+    """Ingest all configured tables or a selected subset from a source directory."""
+    selected_tables = tables if tables is not None else config.source_tables
+
     outputs = []
-    for table in config.source_tables:
-        outputs.append(ingest_table(table, config, ingest_date))
+    for table in selected_tables:
+        outputs.append(
+            ingest_table(
+                table,
+                config=config,
+                ingest_date=ingest_date,
+                source_dir=source_dir,
+            )
+        )
+
     return outputs

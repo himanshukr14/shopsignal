@@ -219,3 +219,13 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 .DS_Store
+
+
+# Local datasets and generated pipeline output
+/data/raw/*
+!/data/raw/.gitkeep
+/data/bronze/
+
+# Local IDE and Python environment files
+.idea/
+.python-version
